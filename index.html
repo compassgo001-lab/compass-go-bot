@@ -89,38 +89,55 @@
         tg.setHeaderColor('#050810');
 
         let currentLang = 'ru';
-        let selectedCountryID = ''; // Используем для поиска данных
+        let selectedCountryIdx = -1;
         let currentView = 'screen-langs';
-        
         const SUPPORT_LINK = "https://t.me/compassgo_support";
 
-        // ДАННЫЕ ПО ЕДЕ
+        // БАЗА ДАННЫХ: 33 РЕСТОРАНА
         const foodData = {
             "cyprus_north": {
                 "meat": [
-                    {
-                        name: "Niazi's Restaurant",
-                        desc: "Легендарный ресторан, где изобрели 'Full Kebab'. Лучшее место для мясной кухни.",
-                        time: "12:00 - 23:00",
-                        img: "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=400",
-                        map: "https://maps.google.com/?q=Niazis+Restaurant+Kyrenia"
-                    },
-                    {
-                        name: "Aspava Famagusta",
-                        desc: "Огромные порции, бесплатные закуски и аутентичная атмосфера.",
-                        time: "11:00 - 22:00",
-                        img: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=400",
-                        map: "https://maps.google.com/?q=Aspava+Restaurant+Famagusta"
-                    }
+                    { name: "Niazi's Restaurant", desc: "Легендарный Full Kebab и лучший мезе в Кирении.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=400", map: "https://www.google.com/maps/search/Niazi's+Kyrenia" },
+                    { name: "Aspava Famagusta", desc: "Классическая турецкая кухня и сочное мясо.", time: "11:00-22:00", img: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400", map: "https://www.google.com/maps/search/Aspava+Famagusta" },
+                    { name: "Kömür Steak & Ocakbaşı", desc: "Премиальные стейки и традиционный гриль.", time: "18:00-00:00", img: "https://images.unsplash.com/photo-1558030006-45c675171f23?w=400", map: "https://www.google.com/maps/search/Kömür+Steak+Kyrenia" },
+                    { name: "Hamur Restaurant", desc: "Домашний уют и лучшие манты в Никосии.", time: "09:00-22:00", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400", map: "https://www.google.com/maps/search/Hamur+Restaurant+Nicosia" },
+                    { name: "Sancak Restaurant", desc: "Мясные деликатесы с великолепным видом.", time: "10:00-23:00", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400", map: "https://www.google.com/maps/search/Sancak+Restaurant+Lapta" },
+                    { name: "Grill House", desc: "Традиционный кебаб и теплая атмосфера.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400", map: "https://www.google.com/maps/search/Grill+House+Kyrenia" }
                 ],
-                "fastfood": [
-                    {
-                        name: "Eziç Peanuts",
-                        desc: "Самая популярная сеть на острове. Знаменитые куриные пальчики с видом на море.",
-                        time: "09:00 - 00:00",
-                        img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400",
-                        map: "https://maps.google.com/?q=Ezic+Peanuts+Kyrenia"
-                    }
+                "fish": [
+                    { name: "Silver Rocks", desc: "Рыбный ресторан прямо на берегу моря.", time: "11:00-23:30", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400", map: "https://www.google.com/maps/search/Silver+Rocks+Lapta" },
+                    { name: "Grida Fish Restaurant", desc: "Изысканные морепродукты и свежий улов.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1498654077810-12c21d4d6dc3?w=400", map: "https://www.google.com/maps/search/Grida+Fish+Iskele" },
+                    { name: "Laguna Fish", desc: "Популярное место среди местных в Фамагусте.", time: "12:00-22:00", img: "https://images.unsplash.com/photo-1551731359-24fc4e73801a?w=400", map: "https://www.google.com/maps/search/Laguna+Fish+Famagusta" },
+                    { name: "Missina", desc: "Свежая рыба и прекрасный сервис в Гирне.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1559742811-822873691df0?w=400", map: "https://www.google.com/maps/search/Missina+Kyrenia" },
+                    { name: "Hurma Restaurant", desc: "Аутентичный вкус моря в Ешилырмак.", time: "09:00-21:00", img: "https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=400", map: "https://www.google.com/maps/search/Hurma+Restaurant+Yesilyirmak" },
+                    { name: "Swan of Soli", desc: "Рыбная классика с видом на залив.", time: "10:00-22:00", img: "https://images.unsplash.com/photo-1534080564607-ca40df1db293?w=400", map: "https://www.google.com/maps/search/Swan+of+Soli+Lefke" }
+                ],
+                "sea": [
+                    { name: "Azure Bay", desc: "Модные морепродукты и коктейли.", time: "10:00-23:00", img: "https://images.unsplash.com/photo-1534604973900-c41ab4c5d4b0?w=400", map: "https://www.google.com/maps/search/Azure+Bay+Lapta" },
+                    { name: "Ocean Basket", desc: "Любимая сеть с отличным плато морепродуктов.", time: "12:00-22:30", img: "https://images.unsplash.com/photo-1563127831-404ad9fd3bb6?w=400", map: "https://www.google.com/maps/search/Ocean+Basket+Nicosia" },
+                    { name: "Kervansaray Fish", desc: "Креветки и кальмары в лучшем исполнении.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1559742811-822873691df0?w=400", map: "https://www.google.com/maps/search/Kervansaray+Fish+Kyrenia" },
+                    { name: "Corner Fish", desc: "Уютный уголок с дарами моря в центре.", time: "12:00-22:00", img: "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400", map: "https://www.google.com/maps/search/Corner+Fish+Girne" },
+                    { name: "Gökkuşağı", desc: "Радужные наборы морепродуктов для компании.", time: "11:00-23:00", img: "https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?w=400", map: "https://www.google.com/maps/search/Gokkusagi+Restoran+Lapta" },
+                    { name: "Trio Marina", desc: "Премиальное меню у яхтенного причала.", time: "09:00-00:00", img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400", map: "https://www.google.com/maps/search/Trio+Kyrenia+Marina" }
+                ],
+                "euro": [
+                    { name: "The House", desc: "Европейская классика в центре города.", time: "09:00-00:00", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", map: "https://www.google.com/maps/search/The+House+Kyrenia" },
+                    { name: "Bellapais Gardens", desc: "Высокая кухня в историческом Аббатстве.", time: "12:00-22:00", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", map: "https://www.google.com/maps/search/Bellapais+Gardens+Restaurant" },
+                    { name: "No.14", desc: "Модерн и авторское меню.", time: "18:00-23:00", img: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400", map: "https://www.google.com/maps/search/No.14+Kyrenia" },
+                    { name: "Kybele", desc: "Роскошный ужин в самом сердце истории.", time: "10:00-00:00", img: "https://images.unsplash.com/photo-1550966841-3eeec37b6703?w=400", map: "https://www.google.com/maps/search/Kybele+Bellapais" },
+                    { name: "Gillham Vineyard", desc: "Винодельня и гастрономия в горах.", time: "12:00-21:00", img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400", map: "https://www.google.com/maps/search/Gillham+Vineyard+Hotel" },
+                    { name: "Veni Vici", desc: "Настоящая итальянская пицца и паста.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=400", map: "https://www.google.com/maps/search/Veni+Vici+Lapta" }
+                ],
+                "fast": [
+                    { name: "Eziç Peanuts", desc: "Самый популярный фастфуд на острове.", time: "09:00-00:00", img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400", map: "https://www.google.com/maps/search/Ezic+Peanuts+Kyrenia" },
+                    { name: "Burger City", desc: "Качественные бургеры быстро и вкусно.", time: "10:00-23:00", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", map: "https://www.google.com/maps/search/Burger+City+Nicosia" },
+                    { name: "Gloria Jean's", desc: "Лучший кофе и десерты.", time: "08:00-23:00", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400", map: "https://www.google.com/maps/search/Gloria+Jeans+Kyrenia" },
+                    { name: "Mado", desc: "Турецкое мороженое и сладости.", time: "08:00-00:00", img: "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=400", map: "https://www.google.com/maps/search/Mado+Kyrenia" },
+                    { name: "Pascucci", desc: "Итальянский стиль в быстром питании.", time: "08:00-23:00", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400", map: "https://www.google.com/maps/search/Pascucci+Nicosia" },
+                    { name: "Lavash", desc: "Быстрый кебаб и турецкий лаваш.", time: "10:00-22:00", img: "https://images.unsplash.com/photo-1628257019036-7140f7f3295c?w=400", map: "https://www.google.com/maps/search/Lavash+Kyrenia" },
+                    { name: "Shakespeare Coffee", desc: "Завтраки и быстрые закуски.", time: "08:30-00:00", img: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=400", map: "https://www.google.com/maps/search/Shakespeare+Coffee+Kyrenia" },
+                    { name: "Sushico", desc: "Суши и паназиатская кухня навынос.", time: "12:00-23:00", img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400", map: "https://www.google.com/maps/search/Sushico+Girne" },
+                    { name: "Simit Sarayı", desc: "Знаменитые симиты и чай.", time: "07:00-22:00", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400", map: "https://www.google.com/maps/search/Simit+Sarayi+Lefkosa" }
                 ]
             }
         };
@@ -134,7 +151,7 @@
             es: ["Francia 🇫🇷", "Rusia 🇷🇺", "Turquía 🇹🇷", "España 🇪🇸", "Italia 🇮🇹", "Alemania 🇩🇪", "Indonesia (Bali) 🇮🇩", "Tailandia 🇹🇭", "China 🇨🇳", "Japón 🇯🇵", "Sri Lanka 🇱🇰", "Catar 🇶🇦", "Egipto 🇪🇬", "México 🇲🇽", "República Dominicana 🇩🇴", "EE. UU. 🇺🇸", "Georgia 🇬🇪", "Armenia 🇦🇲", "Kazajistán 🇰🇿", "Portugal 🇵🇹", "Chipre del Norte 🇹🇷", "Chipre del Sur 🇨🇾", "EAU 🇦🇪", "Montenegro 🇲🇪", "Grecia 🇬🇷", "Reino Unido 🇬🇧", "Azerbaiyán 🇦🇿"],
             it: ["Francia 🇫🇷", "Russia 🇷🇺", "Turchia 🇹🇷", "Spagna 🇪🇸", "Italia 🇮🇹", "Germania 🇩🇪", "Indonesia (Bali) 🇮🇩", "Thailandia 🇹🇭", "Cina 🇨🇳", "Giappone 🇯🇵", "Sri Lanka 🇱🇰", "Qatar 🇶🇦", "Egitto 🇪🇬", "Messico 🇲🇽", "Repubblica Dominicana 🇩🇴", "USA 🇺🇸", "Georgia 🇬🇪", "Armenia 🇦🇲", "Kazakhstan 🇰🇿", "Portogallo 🇵🇹", "Cipro del Nord 🇹🇷", "Cipro del Sud 🇨🇾", "EAU 🇦🇪", "Montenegro 🇲🇪", "Grecia 🇬🇷", "Regno Unito 🇬🇧", "Azerbaigian 🇦🇿"],
             de: ["Frankreich 🇫🇷", "Russland 🇷🇺", "Türkei 🇹🇷", "Spanien 🇪🇸", "Italien 🇮🇹", "Deutschland 🇩🇪", "Indonesien (Bali) 🇮🇩", "Thailand 🇹🇭", "China 🇨🇳", "Japan 🇯🇵", "Sri Lanka 🇱🇰", "Katar 🇶🇦", "Ägypten 🇪🇬", "Mexiko 🇲🇽", "Dominikanische Republik 🇩🇴", "USA 🇺🇸", "Georgien 🇬🇪", "Armenien 🇦🇲", "Kasachstan 🇰🇿", "Portugal 🇵🇹", "Nordzypern 🇹🇷", "Südzypern 🇨🇾", "VAE 🇦🇪", "Montenegro 🇲🇪", "Griechenland 🇬🇷", "Vereinigtes Königreich 🇬🇧", "Aserbaidschan 🇦🇿"],
-            cn: ["法国 🇫🇷", "俄罗斯 🇷🇺", "土耳其 🇹🇷", "西班牙 🇪🇸", "意大利 🇮🇹", "德国 🇩🇪", "印度尼西亚 (巴厘岛) 🇮🇩", "泰国 🇹🇭", "中国 🇨🇳", "日本 🇯🇵", "斯里兰卡 🇱🇰", "卡塔尔 🇶🇦", "埃及 🇪🇬", "墨西哥 🇲🇽", "多米尼加 🇩🇴", "美国 🇺🇸", "格鲁吉亚 🇬🇪", "亚美尼亚 🇦🇲", "哈萨克斯坦 🇰🇿", "Portugal 🇵🇹", "北塞浦路斯 🇹🇷", "南塞浦路斯 🇨🇾", "阿联酋 🇦🇪", "黑山 🇲🇪", "希腊 🇬🇷", "英国 🇬🇧", "阿塞拜疆 🇦🇿"]
+            cn: ["法国 🇫🇷", "俄罗斯 🇷🇺", "土耳其 🇹🇷", "西班牙 🇪🇸", "意大利 🇮🇹", "德国 🇩🇪", "印度尼西亚 (巴厘岛) 🇮🇩", "泰国 🇹🇭", "中国 🇨🇳", "日本 🇯🇵", "斯里兰卡 🇱🇰", "卡塔尔 🇶🇦", "埃及 🇪🇬", "墨西哥 🇲🇽", "多米尼加 🇩🇴", "美国 🇺🇸", "格鲁吉亚 🇬🇪", "亚美尼亚 🇦🇲", "哈萨克斯坦 🇰🇿", "葡萄牙 🇵🇹", "北塞浦路斯 🇹🇷", "南塞浦路斯 🇨🇾", "阿联酋 🇦🇪", "黑山 🇲🇪", "希腊 🇬🇷", "英国 🇬🇧", "阿塞拜疆 🇦🇿"]
         };
 
         const dict = {
@@ -144,7 +161,7 @@
             pl: { t: "Wybierz kraj 📍", join: "Kontakt", cancel: "Anuluj", cat: ["Zasady", "Praca", "Jedzenie", "Usługi", "Nieruchomości", "Reklama", "Wiadomości", "Dokumenty"], chat: "CZAT SPOŁECZNOŚCI", support: "WSPARCIE", kitchens: {meat:"Mięso", fish:"Ryba", sea:"Owoce morza", euro:"Europa", fast:"Fastfood"} },
             fr: { t: "Choisir un pays 📍", join: "Contact", cancel: "Annuler", cat: ["Règles", "Travail", "Nourriture", "Services", "Immobilier", "Publicité", "Nouvelles", "Documents"], chat: "CHAT COMMUNAUTAIRE", support: "SUPPORT", kitchens: {meat:"Viande", fish:"Poisson", sea:"Fruits de mer", euro:"Europe", fast:"Fastfood"} },
             es: { t: "Seleccionar país 📍", join: "Contacto", cancel: "Cancelar", cat: ["Reglas", "Trabajo", "Comida", "Servicios", "Inmuebles", "Anuncios", "Noticias", "Documentos"], chat: "CHAT DE LA COMUNIDAD", support: "SOPORTE", kitchens: {meat:"Carne", fish:"Pescado", sea:"Mariscos", euro:"Europa", fast:"Comida rápida"} },
-            it: { t: "Scegli il paese 📍", join: "Contatto", cancel: "Annulla", cat: ["Regole", "Lavoro", "Cibo", "Servizi", "Immobili", "Pubblicità", "Notizie", "Documenti"], chat: "CHAT DELLA COMMUNITY", support: "SUPPORTO", kitchens: {meat:"Carne", fish:"Pesce", sea:"Frutti di mare", euro:"Europa", fast:"Fastfood"} },
+            it: { t: "Scegli il paese 📍", join: "Contatto", cancel: "Annulla", cat: ["Regole", "Lavoro", "Cibo", "Servizi", "Immobili", "Pubblicità", "Notizie", "Documentи"], chat: "CHAT DELLA COMMUNITY", support: "SUPPORTO", kitchens: {meat:"Carne", fish:"Pesce", sea:"Frutti di mare", euro:"Europa", fast:"Fastfood"} },
             de: { t: "Land wählen 📍", join: "Kontakt", cancel: "Abbrechen", cat: ["Regeln", "Arbeit", "Essen", "Dienstleistungen", "Immobilien", "Werbung", "Nachrichten", "Dokumente"], chat: "COMMUNITY-CHAT", support: "SUPPORT", kitchens: {meat:"Fleisch", fish:"Fisch", sea:"Meeresfrüchte", euro:"Europa", fast:"Fastfood"} },
             cn: { t: "选择国家 📍", join: "联系", cancel: "取消", cat: ["规则", "工作", "美食", "服务", "房产", "广告", "新闻", "文件"], chat: "社区聊天", support: "支持", kitchens: {meat:"肉", fish:"鱼", sea:"海鲜", euro:"欧洲", fast:"快餐"} }
         };
@@ -155,15 +172,10 @@
             target.classList.remove('hidden');
             currentView = id;
             setTimeout(() => target.style.opacity = "1", 50);
-            
             if (id === 'screen-langs') {
-                backButton.hide();
-                mainButton.hide();
-                secondaryButton.hide();
+                backButton.hide(); mainButton.hide(); secondaryButton.hide();
             } else {
-                backButton.show();
-                mainButton.show();
-                secondaryButton.show();
+                backButton.show(); mainButton.show(); secondaryButton.show();
             }
         }
 
@@ -180,32 +192,25 @@
             const data = dict[lang];
             mainButton.setParams({ text: data.chat, is_visible: true, color: '#2481cc' });
             secondaryButton.setParams({ text: data.support, is_visible: true, color: '#1c1c1e' });
-
             document.getElementById('title-countries').innerText = data.t;
             const list = document.getElementById('scroll-area');
             list.innerHTML = '';
-            
             const countries = countriesList[lang];
-            const ruCountries = countriesList['ru']; // Для получения ID
-            
             countries.forEach((name, idx) => {
                 const div = document.createElement('div');
                 div.className = 'card';
                 div.innerHTML = `<span>${name}</span> <span style="opacity:0.3">➡️</span>`;
-                // Сохраняем "внутренний ID" страны на основе русского списка для поиска данных
-                const countryID = ruCountries[idx];
-                div.onclick = () => openCountry(name, countryID);
+                div.onclick = () => openCountry(name, idx);
                 list.appendChild(div);
             });
             showScreen('screen-countries');
         }
 
-        function openCountry(displayName, countryID) {
+        function openCountry(displayName, index) {
             tg.HapticFeedback.selectionChanged();
-            selectedCountryID = countryID;
+            selectedCountryIdx = index;
             const data = dict[currentLang];
             document.getElementById('current-country-name').innerText = displayName;
-            
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
             const icons = ["📜", "💼", "🍴", "🛠", "🏠", "📢", "📰", "📄"];
@@ -215,9 +220,8 @@
                 btn.style.display = "flex"; btn.style.justifyContent = "center"; btn.style.alignItems = "center"; btn.style.gap = "10px";
                 btn.innerHTML = `<span>${icons[index]}</span> <span>${catName}</span>`;
                 btn.onclick = () => {
-                    if (index === 2) { // Индекс категории "Еда" всегда 2
-                        openFoodCategories();
-                    } else {
+                    if (index === 2) openFoodCategories();
+                    else {
                         tg.showActionSheet({
                             title: catName,
                             buttons: [{text: data.join, id: 'ok'}, {text: data.cancel, type: 'destructive'}]
@@ -234,8 +238,6 @@
             document.getElementById('subcat-title').innerText = data.cat[2];
             const grid = document.getElementById('subcat-grid');
             grid.innerHTML = '';
-            
-            const keys = {meat: "meat", fish: "fish", sea: "sea", euro: "euro", fast: "fast"};
             Object.keys(data.kitchens).forEach(key => {
                 const btn = document.createElement('button');
                 btn.innerText = data.kitchens[key];
@@ -249,13 +251,13 @@
             document.getElementById('food-list-title').innerText = kitchenName;
             const container = document.getElementById('food-list');
             container.innerHTML = '';
-
-            // Поиск данных по ID страны и ключу кухни
-            const countryKey = (selectedCountryID === "Северный Кипр 🇹🇷") ? "cyprus_north" : "";
+            
+            // ИСПРАВЛЕННАЯ ЛОГИКА: Всегда сопоставляем Северный Кипр по индексу 20
+            const countryKey = (selectedCountryIdx === 20) ? "cyprus_north" : "";
+            
             const items = (foodData[countryKey] && foodData[countryKey][kitchenKey]) || [];
-
             if (items.length === 0) {
-                container.innerHTML = '<p style="margin-top:20px; opacity:0.5;">Coming soon...</p>';
+                container.innerHTML = '<p style="margin-top:20px; opacity:0.5;">Скоро добавим / Coming soon...</p>';
             } else {
                 items.forEach(item => {
                     const card = document.createElement('div');
@@ -279,6 +281,9 @@
             tg.HapticFeedback.notificationOccurred('success');
             tg.openTelegramLink(SUPPORT_LINK);
         }
+
+        mainButton.onClick(() => handleSupportAction());
+        secondaryButton.onClick(() => handleSupportAction());
     </script>
 </body>
 </html>
