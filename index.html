@@ -30,14 +30,13 @@
         h2 { font-size: 22px; margin-bottom: 15px; color: #fff; font-weight: 700; }
         p { opacity: 0.5; font-size: 14px; margin-bottom: 25px; }
 
-        /* Стили для карточек еды */
         .food-card { background: rgba(255, 255, 255, 0.08); border-radius: 24px; overflow: hidden; margin-bottom: 20px; text-align: left; border: 1px solid rgba(255, 255, 255, 0.1); }
         .food-img { width: 100%; height: 160px; object-fit: cover; }
         .food-info { padding: 15px; }
         .food-title { font-size: 18px; font-weight: 700; margin-bottom: 5px; display: block; }
         .food-desc { font-size: 13px; opacity: 0.7; margin-bottom: 10px; line-height: 1.4; }
         .food-meta { font-size: 12px; opacity: 0.5; display: flex; align-items: center; gap: 5px; margin-bottom: 12px; }
-        .map-btn { width: 100%; background: #2481cc; border: none; padding: 10px; border-radius: 12px; font-size: 13px; color: white; font-weight: 600; }
+        .map-btn { width: 100%; background: #2481cc; border: none; padding: 12px; border-radius: 14px; font-size: 13px; color: white; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -90,52 +89,64 @@
         tg.setHeaderColor('#050810');
 
         let currentLang = 'ru';
-        let selectedCountry = '';
+        let selectedCountryID = ''; // Используем для поиска данных
         let currentView = 'screen-langs';
         
         const SUPPORT_LINK = "https://t.me/compassgo_support";
 
-        // ДАННЫЕ ПО ЕДЕ (СЕВЕРНЫЙ КИПР)
+        // ДАННЫЕ ПО ЕДЕ
         const foodData = {
-            "Северный Кипр 🇹🇷": {
-                "Мясо": [
+            "cyprus_north": {
+                "meat": [
                     {
                         name: "Niazi's Restaurant",
-                        desc: "Легендарный ресторан, где изобрели 'Full Kebab'. Лучшее место для знакомства с кипрской мясной кухней.",
+                        desc: "Легендарный ресторан, где изобрели 'Full Kebab'. Лучшее место для мясной кухни.",
                         time: "12:00 - 23:00",
                         img: "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=400",
-                        map: "https://maps.app.goo.gl/niazis"
+                        map: "https://maps.google.com/?q=Niazis+Restaurant+Kyrenia"
                     },
                     {
                         name: "Aspava Famagusta",
-                        desc: "Огромные порции, бесплатные закуски (мезе) и аутентичная атмосфера старого города.",
+                        desc: "Огромные порции, бесплатные закуски и аутентичная атмосфера.",
                         time: "11:00 - 22:00",
                         img: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=400",
-                        map: "https://maps.app.goo.gl/aspava"
+                        map: "https://maps.google.com/?q=Aspava+Restaurant+Famagusta"
                     }
                 ],
-                "Фастфуд": [
+                "fastfood": [
                     {
                         name: "Eziç Peanuts",
-                        desc: "Самая популярная сеть на острове. Знаменитые куриные пальчики и бургеры с видом на море.",
+                        desc: "Самая популярная сеть на острове. Знаменитые куриные пальчики с видом на море.",
                         time: "09:00 - 00:00",
                         img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400",
-                        map: "https://maps.app.goo.gl/ezic"
+                        map: "https://maps.google.com/?q=Ezic+Peanuts+Kyrenia"
                     }
                 ]
-                // Остальные категории (Рыба, Европа и т.д.) добавляются аналогично
             }
         };
 
         const countriesList = {
-            ru: ["Франция 🇫🇷", "Россия 🇷🇺", "Турция 🇹🇷", "Испания 🇪🇸", "Италия 🇮🇹", "Германия 🇩🇪", "Индонезия (Бали) 🇮🇩", "Таиланд 🇹🇭", "Китай 🇨🇳", "Япония 🇯🇵", "Шри-Ланка 🇱🇰", "Катар 🇶🇦", "Египет 🇪🇬", "Мексика 🇲🇽", "Доминикана 🇩🇴", "США 🇺🇸", "Грузия 🇬🇪", "Армения 🇦🇲", "Казахстан 🇰🇿", "Португалия 🇵🇹", "Северный Кипр 🇹🇷", "Южный Кипр 🇨🇾", "ОАЭ 🇦🇪", "Черногория 🇲🇪", "Греция 🇬🇷", "Великобритания 🇬🇧", "Азербайджан 🇦🇿"]
-            // ... другие языки из базового кода сохраняются в памяти
+            ru: ["Франция 🇫🇷", "Россия 🇷🇺", "Турция 🇹🇷", "Испания 🇪🇸", "Италия 🇮🇹", "Германия 🇩🇪", "Индонезия (Бали) 🇮🇩", "Таиланд 🇹🇭", "Китай 🇨🇳", "Япония 🇯🇵", "Шри-Ланка 🇱🇰", "Катар 🇶🇦", "Египет 🇪🇬", "Мексика 🇲🇽", "Доминикана 🇩🇴", "США 🇺🇸", "Грузия 🇬🇪", "Армения 🇦🇲", "Казахстан 🇰🇿", "Португалия 🇵🇹", "Северный Кипр 🇹🇷", "Южный Кипр 🇨🇾", "ОАЭ 🇦🇪", "Черногория 🇲🇪", "Греция 🇬🇷", "Великобритания 🇬🇧", "Азербайджан 🇦🇿"],
+            en: ["France 🇫🇷", "Russia 🇷🇺", "Turkey 🇹🇷", "Spain 🇪🇸", "Italy 🇮🇹", "Germany 🇩🇪", "Indonesia (Bali) 🇮🇩", "Thailand 🇹🇭", "China 🇨🇳", "Japan 🇯🇵", "Sri Lanka 🇱🇰", "Qatar 🇶🇦", "Egypt 🇪🇬", "Mexico 🇲🇽", "Dominican Republic 🇩🇴", "USA 🇺🇸", "Georgia 🇬🇪", "Armenia 🇦🇲", "Kazakhstan 🇰🇿", "Portugal 🇵🇹", "Northern Cyprus 🇹🇷", "Southern Cyprus 🇨🇾", "UAE 🇦🇪", "Montenegro 🇲🇪", "Greece 🇬🇷", "United Kingdom 🇬🇧", "Azerbaijan 🇦🇿"],
+            tr: ["Fransa 🇫🇷", "Rusya 🇷🇺", "Türkiye 🇹🇷", "İspanya 🇪🇸", "İtalya 🇮🇹", "Almanya 🇩🇪", "Endonezya (Bali) 🇮🇩", "Tayland 🇹🇭", "Çin 🇨🇳", "Japonya 🇯🇵", "Sri Lanka 🇱🇰", "Katar 🇶🇦", "Mısır 🇪🇬", "Meksika 🇲🇽", "Dominik Cumhuriyeti 🇩🇴", "ABD 🇺🇸", "Gürcistan 🇬🇪", "Ermenistan 🇦🇲", "Kazakistan 🇰🇿", "Portekiz 🇵🇹", "Kuzey Kıbrıs 🇹🇷", "Güney Kıbrıs 🇨🇾", "BAE 🇦🇪", "Karadağ 🇲🇪", "Yunanistan 🇬🇷", "Birleşik Krallık 🇬🇧", "Azerbaycan 🇦🇿"],
+            pl: ["Francja 🇫🇷", "Rosja 🇷🇺", "Turcja 🇹🇷", "Hiszpania 🇪🇸", "Włochy 🇮🇹", "Niemcy 🇩🇪", "Indonezja (Bali) 🇮🇩", "Tajlandia 🇹🇭", "Chiny 🇨🇳", "Japonia 🇯🇵", "Sri Lanka 🇱🇰", "Katar 🇶🇦", "Egipt 🇪🇬", "Meksyk 🇲🇽", "Dominikana 🇩🇴", "USA 🇺🇸", "Gruzja 🇬🇪", "Armenia 🇦🇲", "Kazakhstan 🇰🇿", "Portugalia 🇵🇹", "Cypr Północny 🇹🇷", "Cypr Południowy 🇨🇾", "ZEA 🇦🇪", "Czarnogóra 🇲🇪", "Grecja 🇬🇷", "Wielka Brytania 🇬🇧", "Azerbejdżan 🇦🇿"],
+            fr: ["France 🇫🇷", "Russie 🇷🇺", "Turquie 🇹🇷", "Espagne 🇪🇸", "Italie 🇮🇹", "Allemagne 🇩🇪", "Indonésie (Bali) 🇮🇩", "Thaïlande 🇹🇭", "Chine 🇨🇳", "Japon 🇯🇵", "Sri Lanka 🇱🇰", "Qatar 🇶🇦", "Égypte 🇪🇬", "Mexique 🇲🇽", "République Dominicaine 🇩🇴", "États-Unis 🇺🇸", "Géorgie 🇬🇪", "Arménie 🇦🇲", "Kazakhstan 🇰🇿", "Portugal 🇵🇹", "Chypre du Nord 🇹🇷", "Chypre du Sud 🇨🇾", "ÉAU 🇦🇪", "Monténégro 🇲🇪", "Grèce 🇬🇷", "Royaume-Uni 🇬🇧", "Azerbaïdjan 🇦🇿"],
+            es: ["Francia 🇫🇷", "Rusia 🇷🇺", "Turquía 🇹🇷", "España 🇪🇸", "Italia 🇮🇹", "Alemania 🇩🇪", "Indonesia (Bali) 🇮🇩", "Tailandia 🇹🇭", "China 🇨🇳", "Japón 🇯🇵", "Sri Lanka 🇱🇰", "Catar 🇶🇦", "Egipto 🇪🇬", "México 🇲🇽", "República Dominicana 🇩🇴", "EE. UU. 🇺🇸", "Georgia 🇬🇪", "Armenia 🇦🇲", "Kazajistán 🇰🇿", "Portugal 🇵🇹", "Chipre del Norte 🇹🇷", "Chipre del Sur 🇨🇾", "EAU 🇦🇪", "Montenegro 🇲🇪", "Grecia 🇬🇷", "Reino Unido 🇬🇧", "Azerbaiyán 🇦🇿"],
+            it: ["Francia 🇫🇷", "Russia 🇷🇺", "Turchia 🇹🇷", "Spagna 🇪🇸", "Italia 🇮🇹", "Germania 🇩🇪", "Indonesia (Bali) 🇮🇩", "Thailandia 🇹🇭", "Cina 🇨🇳", "Giappone 🇯🇵", "Sri Lanka 🇱🇰", "Qatar 🇶🇦", "Egitto 🇪🇬", "Messico 🇲🇽", "Repubblica Dominicana 🇩🇴", "USA 🇺🇸", "Georgia 🇬🇪", "Armenia 🇦🇲", "Kazakhstan 🇰🇿", "Portogallo 🇵🇹", "Cipro del Nord 🇹🇷", "Cipro del Sud 🇨🇾", "EAU 🇦🇪", "Montenegro 🇲🇪", "Grecia 🇬🇷", "Regno Unito 🇬🇧", "Azerbaigian 🇦🇿"],
+            de: ["Frankreich 🇫🇷", "Russland 🇷🇺", "Türkei 🇹🇷", "Spanien 🇪🇸", "Italien 🇮🇹", "Deutschland 🇩🇪", "Indonesien (Bali) 🇮🇩", "Thailand 🇹🇭", "China 🇨🇳", "Japan 🇯🇵", "Sri Lanka 🇱🇰", "Katar 🇶🇦", "Ägypten 🇪🇬", "Mexiko 🇲🇽", "Dominikanische Republik 🇩🇴", "USA 🇺🇸", "Georgien 🇬🇪", "Armenien 🇦🇲", "Kasachstan 🇰🇿", "Portugal 🇵🇹", "Nordzypern 🇹🇷", "Südzypern 🇨🇾", "VAE 🇦🇪", "Montenegro 🇲🇪", "Griechenland 🇬🇷", "Vereinigtes Königreich 🇬🇧", "Aserbaidschan 🇦🇿"],
+            cn: ["法国 🇫🇷", "俄罗斯 🇷🇺", "土耳其 🇹🇷", "西班牙 🇪🇸", "意大利 🇮🇹", "德国 🇩🇪", "印度尼西亚 (巴厘岛) 🇮🇩", "泰国 🇹🇭", "中国 🇨🇳", "日本 🇯🇵", "斯里兰卡 🇱🇰", "卡塔尔 🇶🇦", "埃及 🇪🇬", "墨西哥 🇲🇽", "多米尼加 🇩🇴", "美国 🇺🇸", "格鲁吉亚 🇬🇪", "亚美尼亚 🇦🇲", "哈萨克斯坦 🇰🇿", "Portugal 🇵🇹", "北塞浦路斯 🇹🇷", "南塞浦路斯 🇨🇾", "阿联酋 🇦🇪", "黑山 🇲🇪", "希腊 🇬🇷", "英国 🇬🇧", "阿塞拜疆 🇦🇿"]
         };
 
         const dict = {
-            ru: { t: "Выберите страну 📍", join: "Написать", cancel: "Отмена", cat: ["Правила", "Работа", "Еда", "Услуги", "Недвижимость", "Реклама", "Новости", "Документы"], chat: "ЧАТ СООБЩЕСТВА", support: "ПОДДЕРЖКА", kitchens: ["Мясо", "Рыба", "Морепродукты", "Европа", "Фастфуд"] },
-            en: { t: "Select Country 📍", join: "Contact", cancel: "Cancel", cat: ["Rules", "Jobs", "Food", "Services", "Property", "Ads", "News", "Documents"], chat: "COMMUNITY CHAT", support: "SUPPORT", kitchens: ["Meat", "Fish", "Seafood", "Europe", "Fastfood"] }
-            // ... другие переводы из базового кода сохраняются
+            ru: { t: "Выберите страну 📍", join: "Написать", cancel: "Отмена", cat: ["Правила", "Работа", "Еда", "Услуги", "Недвижимость", "Реклама", "Новости", "Документы"], chat: "ЧАТ СООБЩЕСТВА", support: "ПОДДЕРЖКА", kitchens: {meat:"Мясо", fish:"Рыба", sea:"Морепродукты", euro:"Европа", fast:"Фастфуд"} },
+            en: { t: "Select Country 📍", join: "Contact", cancel: "Cancel", cat: ["Rules", "Jobs", "Food", "Services", "Property", "Ads", "News", "Documents"], chat: "COMMUNITY CHAT", support: "SUPPORT", kitchens: {meat:"Meat", fish:"Fish", sea:"Seafood", euro:"Europe", fast:"Fastfood"} },
+            tr: { t: "Ülke Seçin 📍", join: "İletişim", cancel: "İptal", cat: ["Kurallar", "İş", "Yemek", "Hizmetler", "Emlak", "Reklam", "Haberler", "Belgeler"], chat: "TOPLULUK SOHBETI", support: "DESTEK", kitchens: {meat:"Et", fish:"Balık", sea:"Deniz Ürünleri", euro:"Avrupa", fast:"Fastfood"} },
+            pl: { t: "Wybierz kraj 📍", join: "Kontakt", cancel: "Anuluj", cat: ["Zasady", "Praca", "Jedzenie", "Usługi", "Nieruchomości", "Reklama", "Wiadomości", "Dokumenty"], chat: "CZAT SPOŁECZNOŚCI", support: "WSPARCIE", kitchens: {meat:"Mięso", fish:"Ryba", sea:"Owoce morza", euro:"Europa", fast:"Fastfood"} },
+            fr: { t: "Choisir un pays 📍", join: "Contact", cancel: "Annuler", cat: ["Règles", "Travail", "Nourriture", "Services", "Immobilier", "Publicité", "Nouvelles", "Documents"], chat: "CHAT COMMUNAUTAIRE", support: "SUPPORT", kitchens: {meat:"Viande", fish:"Poisson", sea:"Fruits de mer", euro:"Europe", fast:"Fastfood"} },
+            es: { t: "Seleccionar país 📍", join: "Contacto", cancel: "Cancelar", cat: ["Reglas", "Trabajo", "Comida", "Servicios", "Inmuebles", "Anuncios", "Noticias", "Documentos"], chat: "CHAT DE LA COMUNIDAD", support: "SOPORTE", kitchens: {meat:"Carne", fish:"Pescado", sea:"Mariscos", euro:"Europa", fast:"Comida rápida"} },
+            it: { t: "Scegli il paese 📍", join: "Contatto", cancel: "Annulla", cat: ["Regole", "Lavoro", "Cibo", "Servizi", "Immobili", "Pubblicità", "Notizie", "Documenti"], chat: "CHAT DELLA COMMUNITY", support: "SUPPORTO", kitchens: {meat:"Carne", fish:"Pesce", sea:"Frutti di mare", euro:"Europa", fast:"Fastfood"} },
+            de: { t: "Land wählen 📍", join: "Kontakt", cancel: "Abbrechen", cat: ["Regeln", "Arbeit", "Essen", "Dienstleistungen", "Immobilien", "Werbung", "Nachrichten", "Dokumente"], chat: "COMMUNITY-CHAT", support: "SUPPORT", kitchens: {meat:"Fleisch", fish:"Fisch", sea:"Meeresfrüchte", euro:"Europa", fast:"Fastfood"} },
+            cn: { t: "选择国家 📍", join: "联系", cancel: "取消", cat: ["规则", "工作", "美食", "服务", "房产", "广告", "新闻", "文件"], chat: "社区聊天", support: "支持", kitchens: {meat:"肉", fish:"鱼", sea:"海鲜", euro:"欧洲", fast:"快餐"} }
         };
 
         function showScreen(id) {
@@ -174,23 +185,26 @@
             const list = document.getElementById('scroll-area');
             list.innerHTML = '';
             
-            // Здесь используется список стран на выбранном языке
-            const countries = countriesList[lang] || countriesList['ru'];
-            [...countries].sort().forEach(name => {
+            const countries = countriesList[lang];
+            const ruCountries = countriesList['ru']; // Для получения ID
+            
+            countries.forEach((name, idx) => {
                 const div = document.createElement('div');
                 div.className = 'card';
                 div.innerHTML = `<span>${name}</span> <span style="opacity:0.3">➡️</span>`;
-                div.onclick = () => openCountry(name);
+                // Сохраняем "внутренний ID" страны на основе русского списка для поиска данных
+                const countryID = ruCountries[idx];
+                div.onclick = () => openCountry(name, countryID);
                 list.appendChild(div);
             });
             showScreen('screen-countries');
         }
 
-        function openCountry(name) {
+        function openCountry(displayName, countryID) {
             tg.HapticFeedback.selectionChanged();
-            selectedCountry = name;
+            selectedCountryID = countryID;
             const data = dict[currentLang];
-            document.getElementById('current-country-name').innerText = name;
+            document.getElementById('current-country-name').innerText = displayName;
             
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
@@ -201,7 +215,7 @@
                 btn.style.display = "flex"; btn.style.justifyContent = "center"; btn.style.alignItems = "center"; btn.style.gap = "10px";
                 btn.innerHTML = `<span>${icons[index]}</span> <span>${catName}</span>`;
                 btn.onclick = () => {
-                    if (catName === "Еда" || catName === "Food" || catName === "Yemek") {
+                    if (index === 2) { // Индекс категории "Еда" всегда 2
                         openFoodCategories();
                     } else {
                         tg.showActionSheet({
@@ -217,30 +231,31 @@
 
         function openFoodCategories() {
             const data = dict[currentLang];
-            document.getElementById('subcat-title').innerText = "Кухня 🍴";
+            document.getElementById('subcat-title').innerText = data.cat[2];
             const grid = document.getElementById('subcat-grid');
             grid.innerHTML = '';
             
-            data.kitchens.forEach(kitchen => {
+            const keys = {meat: "meat", fish: "fish", sea: "sea", euro: "euro", fast: "fast"};
+            Object.keys(data.kitchens).forEach(key => {
                 const btn = document.createElement('button');
-                btn.innerText = kitchen;
-                btn.onclick = () => showFoodList(kitchen);
+                btn.innerText = data.kitchens[key];
+                btn.onclick = () => showFoodList(key, data.kitchens[key]);
                 grid.appendChild(btn);
             });
             showScreen('screen-subcat');
         }
 
-        function showFoodList(kitchenType) {
-            document.getElementById('food-list-title').innerText = kitchenType;
+        function showFoodList(kitchenKey, kitchenName) {
+            document.getElementById('food-list-title').innerText = kitchenName;
             const container = document.getElementById('food-list');
             container.innerHTML = '';
 
-            // Проверяем наличие данных для Северного Кипра (на русском языке в БД)
-            const countryKey = "Северный Кипр 🇹🇷";
-            const items = (foodData[countryKey] && foodData[countryKey][kitchenType]) || [];
+            // Поиск данных по ID страны и ключу кухни
+            const countryKey = (selectedCountryID === "Северный Кипр 🇹🇷") ? "cyprus_north" : "";
+            const items = (foodData[countryKey] && foodData[countryKey][kitchenKey]) || [];
 
             if (items.length === 0) {
-                container.innerHTML = '<p style="margin-top:20px">Скоро здесь появятся лучшие места!</p>';
+                container.innerHTML = '<p style="margin-top:20px; opacity:0.5;">Coming soon...</p>';
             } else {
                 items.forEach(item => {
                     const card = document.createElement('div');
@@ -251,7 +266,7 @@
                             <span class="food-title">${item.name}</span>
                             <div class="food-meta">🕒 ${item.time}</div>
                             <p class="food-desc">${item.desc}</p>
-                            <button class="map-btn" onclick="tg.openLink('${item.map}')">📍 На карте</button>
+                            <button class="map-btn" onclick="tg.openLink('${item.map}')">📍 Google Maps</button>
                         </div>
                     `;
                     container.appendChild(card);
