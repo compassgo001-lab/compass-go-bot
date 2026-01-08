@@ -1,25 +1,31 @@
 import os
 import threading
 from telebot import TeleBot, types
-from flask import Flask
+from flask import Flask, send_from_directory
 
-# Инициализация Flask для Render
+# Инициализация Flask
 app = Flask(__name__)
 TOKEN = os.environ.get('BOT_TOKEN')
 bot = TeleBot(TOKEN)
 
+# ГЛАВНОЕ ИСПРАВЛЕНИЕ: Теперь по прямой ссылке будет открываться ваш index.html
 @app.route('/')
-def health_check():
-    return "Bot is alive!", 200
+def index():
+    return send_from_directory('.', 'index.html')
 
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # Замените ссылку ниже на вашу реальную ссылку из Render
+    # Используем вашу актуальную ссылку из Render
     web_app = types.WebAppInfo("https://compass-go-service.onrender.com") 
     item = types.KeyboardButton("Открыть CompassGo", web_app=web_app)
     markup.add(item)
-    bot.send_message(message.chat.id, "Добро пожаловать! Нажмите кнопку ниже:", reply_markup=markup)
+    
+    bot.send_message(
+        message.chat.id, 
+        "Добро пожаловать в CompassGo! Нажмите на кнопку ниже, чтобы открыть приложение.", 
+        reply_markup=markup
+    )
 
 def run_bot():
     bot.infinity_polling()
@@ -27,6 +33,6 @@ def run_bot():
 if __name__ == "__main__":
     # Запускаем бота в отдельном потоке
     threading.Thread(target=run_bot).start()
-    # Запускаем Flask на порту, который требует Render
+    # Запускаем веб-сервер на порту 10000 для Render
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
