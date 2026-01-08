@@ -73,7 +73,6 @@
         let currentLang = 'ru';
         let selectedCountry = '';
         
-        // Ссылка на аккаунт поддержки (теперь всё ведет сюда)
         const SUPPORT_LINK = "https://t.me/compassgo_support";
 
         const countriesList = {
@@ -96,7 +95,7 @@
             fr: { t: "Choisir un pays 📍", join: "Contact", cancel: "Annuler", cat: ["Règles", "Travail", "Nourriture", "Services", "Immobilier", "Publicité", "Nouvelles", "Documents"], chat: "CHAT COMMUNAUTAIRE", support: "SUPPORT" },
             es: { t: "Seleccionar país 📍", join: "Contacto", cancel: "Cancelar", cat: ["Reglas", "Trabajo", "Comida", "Servicios", "Inmuebles", "Anuncios", "Noticias", "Documentos"], chat: "CHAT DE LA COMUNIDAD", support: "SOPORTE" },
             it: { t: "Scegli il paese 📍", join: "Contatto", cancel: "Annulla", cat: ["Regole", "Lavoro", "Cibo", "Servizi", "Immobili", "Pubblicità", "Notizie", "Documenti"], chat: "CHAT DELLA COMMUNITY", support: "SUPPORTO" },
-            de: { t: "Land wählen 📍", join: "Kontakt", cancel: "Abbrechen", cat: ["Regeln", "Arbeit", "Essen", "Dienstleistungen", "Immobilien", "Werbung", "Nachrichten", "Dokumente"], chat: "COMMUNITY-CHAT", support: "SUPPORT" },
+            de: { t: "Land wählen 📍", join: "Kontakt", cancel: "Abbrechen", cat: ["Regeln", "Arbeit", "Essen", "Dienstleistungen", "Immobilien", "Werbung", "Nachrichten", "Документы"], chat: "COMMUNITY-CHAT", support: "SUPPORT" },
             cn: { t: "选择国家 📍", join: "联系", cancel: "取消", cat: ["规则", "工作", "美食", "服务", "房产", "广告", "新闻", "文件"], chat: "社区聊天", support: "支持" }
         };
 
@@ -112,6 +111,9 @@
                 secondaryButton.hide();
             } else {
                 backButton.show();
+                // Кнопки теперь всегда видны на всех экранах, кроме выбора языка
+                mainButton.show();
+                secondaryButton.show();
             }
         }
 
@@ -125,6 +127,14 @@
             currentLang = lang;
             const data = dict[lang];
             const countries = countriesList[lang];
+
+            // Инициализация нативных кнопок сразу после выбора языка
+            mainButton.setParams({ text: data.chat, is_visible: true, color: '#2481cc' });
+            mainButton.onClick(handleSupportAction);
+
+            secondaryButton.setParams({ text: data.support, is_visible: true, color: '#1c1c1e' });
+            secondaryButton.onClick(handleSupportAction);
+
             document.getElementById('title-countries').innerText = data.t;
             const list = document.getElementById('scroll-area');
             list.innerHTML = '';
@@ -146,16 +156,6 @@
             const data = dict[currentLang];
             document.getElementById('current-country-name').innerText = name;
             
-            // Нативная Кнопка 1: ЧАТ СООБЩЕСТВА (ведёт на поддержку)
-            mainButton.setParams({ text: data.chat, is_visible: true, color: '#2481cc' });
-            mainButton.offClick(handleSupportAction);
-            mainButton.onClick(handleSupportAction);
-
-            // Нативная Кнопка 2: ПОДДЕРЖКА (ведёт на поддержку)
-            secondaryButton.setParams({ text: data.support, is_visible: true, color: '#1c1c1e' });
-            secondaryButton.offClick(handleSupportAction);
-            secondaryButton.onClick(handleSupportAction);
-
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = '';
             const icons = ["📜", "💼", "🍴", "🛠", "🏠", "📢", "📰", "📄"];
